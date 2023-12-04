@@ -2,11 +2,11 @@
 # https://github.com/sendgrid/sendgrid-python
 import os
 from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
+from sendgrid.helpers.mail import Mail, Email, To
 
 message = Mail(
-    from_email='bastien.winant@mail.mcgill.ca',
-    to_emails='bastien.winant@gmail.com',
+    from_email=Email('bastien.winant@mail.mcgill.ca', "Bastien Winant"),
+    to_emails=To('bastien.winant@gmail.com'),
     subject='Sending with Twilio SendGrid is Fun',
     html_content='<h1>Hello World</h1><h2>I\'m using Twilio Sendgrid</h2>')
 try:
