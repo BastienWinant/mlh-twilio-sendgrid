@@ -7,7 +7,6 @@ sender = {
   }
 
 recipient = {
-  "name": "Bastien Winant",
   "address": os.environ.get('TO_EMAIL')
   }
 
