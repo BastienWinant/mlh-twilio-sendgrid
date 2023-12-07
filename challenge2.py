@@ -1,4 +1,4 @@
-from helpers import sendEmail
+from helpers import sendTextEmail
 import os
 
 sender = {
@@ -10,7 +10,10 @@ recipient = {
   "address": os.environ.get('TO_EMAIL')
   }
 
-subject = 'Sending this Twilio SendGrid is Fun'
-body = "Hello World"
+emailData = {
+  "subject": "Twilio Challenge 2",
+  "title": "Hello World",
+  "body": "This email was sent via the SendGrid API"
+}
 
-sendEmail(sender, recipient, subject, body)
+sendTextEmail(emailData)
