@@ -8,7 +8,7 @@ import os
 from helpers import sendImageEmail
 
 
-def sendAPIRequest():
+def getNASAPictures():
   payload = {
     'api_key': os.environ.get('NASA_API_KEY'), # get NASA API key 
     'sol': random.randint(0, 1000) # generate random number for Martian sol
@@ -24,35 +24,34 @@ def sendAPIRequest():
     print("HTTP Error") 
     print(errh.args[0]) 
 
-def selectRandomPhoto():
-  photoData = sendAPIRequest()
+def selectRandomImage():
+  imgData = getNASAPictures()
 
   try:
-    photo = random.choice(photoData["photos"])
+    photo = random.choice(imgData["photos"])
     return photo
   except ValueError as e:
     print(e) 
   except KeyError as e:
     print(e)
   except IndexError as e:
-    print("Could not get a photo URL")
-    print("Photos in the supplied data: ", len(photoData["photos"]))
+    print("Could not get a image URL")
+    print("Images in the supplied data: ", len(imgData["photos"]))
 
-def formatPhotodData(photoData):
-  print(photoData)
-  imgURL = photoData["img_src"]
-  imgDate = photoData["earth_date"]
-  roverName = photoData["rover"]["name"]
+def formatImageData(imgData):
+  imgURL = imgData["img_src"]
+  imgDate = imgData["earth_date"]
+  roverName = imgData["rover"]["name"]
 
   return imgURL, imgDate, roverName
 
 
 if __name__=="__main__":
-  imgData = selectRandomPhoto()
-  imgSrc, imgDate, roverName = formatPhotodData(imgData)
+  imgData = selectRandomImage()
+  imgSrc, imgDate, roverName = formatImageData(imgData)
 
   emailData = {
-    "title": "Here is your Mars Rover picture",
+    "title": "Twilio Challenge 3",
     "img_src": imgSrc,
     "img_caption": f"This photo was taken by rover {roverName} on {imgDate}"
     }
