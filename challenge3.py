@@ -33,7 +33,7 @@ def send_mars_email(from_email, to_email, img_data):
         <h1>Check out this Mars pic</h1>
         <figure style='margin: 0'>
           <img src='{img_data["url"]}' style='width: 400px; height: auto;' />
-          <figcaption>Photo taken by {img_data["rover"]} on {img_data["date"]}</figcaption>
+          <figcaption><i>Photo taken by {img_data["rover"]} on {img_data["date"]}</i></figcaption>
         </figure>
       """)
 
