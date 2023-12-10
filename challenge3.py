@@ -30,8 +30,9 @@ def send_mars_email(from_email, to_email, img_data):
       to_emails=to_email,
       subject='Here is your Mars Rover picture',
       html_content=f"""
+        <h1>Check out this Mars pic</h1>
         <figure style='margin: 0'>
-          <img src='{img_data["url"]}' />
+          <img src='{img_data["url"]}' style='width: 400px; height: auto;' />
           <figcaption>Photo taken by {img_data["rover"]} on {img_data["date"]}</figcaption>
         </figure>
       """)
