@@ -29,10 +29,8 @@ def send_mars_email(from_email, to_email, img_url):
   print(response.status_code, response.body, response.headers)
 
 if __name__=="__main__":
-  to_email = os.environ.get('FROM_EMAIL')
-  from_email = os.environ.get('TO_EMAIL')
+  to_email = os.environ.get('TO_EMAIL')
+  from_email = os.environ.get('FROM_EMAIL')
   image_url = get_mars_photo(randint(0,1000))
-  print(to_email)
-  print(from_email)
-  print(image_url)
+  
   send_mars_email(from_email=from_email, to_email=to_email, img_url=image_url)
