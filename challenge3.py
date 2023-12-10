@@ -1,59 +1,38 @@
+from random import choice, randint
+import os
 import requests
-import os
-import random
-import json
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
-import base64
-import os
-from helpers import sendImageEmail
+rover_url = 'https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos'
 
 
-def getNASAPictures():
-  payload = {
-    'api_key': os.environ.get('NASA_API_KEY'), # get NASA API key 
-    'sol': random.randint(0, 1000) # generate random number for Martian sol
-    }
+def get_mars_photo(sol, api_key='NASA_API_KEY'):
+  params = {'sol': sol, 'api_key': os.environ.get(api_key)}
+  response = requests.get(rover_url, params).json()
+  photos = response['photos']
+  
+  return choice(photos)['img_src']
 
-  try:
-    url ="https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos"
-    r = requests.get(url, params=payload)
-    r.raise_for_status()
 
-    return json.loads(r.text)
-  except requests.exceptions.HTTPError as errh: 
-    print("HTTP Error") 
-    print(errh.args[0]) 
+def send_mars_email(from_email, to_email, img_url):
+  sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
 
-def selectRandomImage():
-  imgData = getNASAPictures()
+  message = Mail(
+      from_email=from_email,
+      to_emails=to_email,
+      subject='Here is your Mars Rover picture',
+      html_content='<strong>Check out this Mars pic</strong><br>'
+                    f'<img src="{img_url}"></img>')
 
-  try:
-    photo = random.choice(imgData["photos"])
-    return photo
-  except ValueError as e:
-    print(e) 
-  except KeyError as e:
-    print(e)
-  except IndexError as e:
-    print("Could not get a image URL")
-    print("Images in the supplied data: ", len(imgData["photos"]))
-
-def formatImageData(imgData):
-  imgURL = imgData["img_src"]
-  imgDate = imgData["earth_date"]
-  roverName = imgData["rover"]["name"]
-
-  return imgURL, imgDate, roverName
-
+  response = sg.send(message)
+  print(response.status_code, response.body, response.headers)
 
 if __name__=="__main__":
-  imgData = selectRandomImage()
-  imgSrc, imgDate, roverName = formatImageData(imgData)
-
-  emailData = {
-    "title": "Twilio Challenge 3",
-    "img_src": imgSrc,
-    "img_caption": f"This photo was taken by rover {roverName} on {imgDate}"
-    }
-
-  sendImageEmail(emailData)
+  to_email = os.environ.get('FROM_EMAIL')
+  from_email = os.environ.get('TO_EMAIL')
+  image_url = get_mars_photo(randint(0,1000))
+  print(to_email)
+  print(from_email)
+  print(image_url)
+  send_mars_email(from_email=from_email, to_email=to_email, img_url=image_url)
